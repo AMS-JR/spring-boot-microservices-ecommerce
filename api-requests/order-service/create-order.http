@@ -1,0 +1,14 @@
+### GET request to example server
+POST http://localhost:8181/api/order
+Content-Type: application/json
+
+{
+  "orderLineItemsDtoList": [
+    {
+      "skuCode": "iphone_15",
+      "price": 1200,
+      "quantity": 1
+    }
+  ]
+}
+###
