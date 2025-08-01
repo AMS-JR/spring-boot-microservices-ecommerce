@@ -1,7 +1,7 @@
 ### POST request to example server
-POST http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+POST {{tokenEndpoint}}
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=client_credentials&client_id=spring-cloud-client-id&client_secret=nQ4RvlP3ixvkCMhho8sraUqfFAX2Tyqk
+grant_type=client_credentials&client_id= {{clientId}}&client_secret= {{clientSecret}}
 
 ###
