@@ -3,11 +3,14 @@ package com.eca.order_service.service;
 import com.eca.order_service.dto.InventoryResponse;
 import com.eca.order_service.dto.OrderLineItemsDto;
 import com.eca.order_service.dto.OrderRequest;
+import com.eca.order_service.kafka.event.OrderPlacedEvent;
+import com.eca.order_service.kafka.producer.OrderPlacedProducer;
 import com.eca.order_service.model.Order;
 import com.eca.order_service.model.OrderLineItems;
 import com.eca.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,6 +27,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder customWebClientBuilder;
+    private final OrderPlacedProducer orderPlacedProducer;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -55,6 +59,7 @@ public class OrderService {
         if (allProductsInStock) {
             orderRepository.save(order);
             // publish Order Placed Event
+            orderPlacedProducer.publishEvent(new OrderPlacedEvent(order.getOrderNumber()));
             return "Order Placed Successfully";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later");
